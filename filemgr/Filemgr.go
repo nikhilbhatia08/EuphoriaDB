@@ -112,7 +112,6 @@ func (fm *FileManager) Write(blk *BlockId, p *Page) error {
 
 	buf := p.Contents()
 	n, err := f.Write(buf)
-
 	if err != nil {
 		if n != len(buf) {
 			return fmt.Errorf("short write: expected %d bytes, wrote %d", len(buf), n)

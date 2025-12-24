@@ -6,31 +6,31 @@ import (
 )
 
 type BlockId struct {
-	filename string
-	blknum   int
+	File   string
+	Blknum int
 }
 
 func NewBlockId(filename string, blknum int) *BlockId {
 	return &BlockId{
-		filename: filename,
-		blknum:   blknum,
+		File:   filename,
+		Blknum: blknum,
 	}
 }
 
 func (b *BlockId) Filename() string {
-	return b.filename
+	return b.File
 }
 
 func (b *BlockId) BlockNum() int {
-	return b.blknum
+	return b.Blknum
 }
 
 func (b *BlockId) Equals(block *BlockId) bool {
-	return b.filename == block.filename && b.blknum == block.blknum
+	return b.File == block.File && b.Blknum == block.Blknum
 }
 
 func (b *BlockId) ToString() string {
-	return fmt.Sprintf("[ File : %s , block : %d]", b.filename, b.blknum)
+	return fmt.Sprintf("[ File : %s , block : %d]", b.File, b.Blknum)
 }
 
 func (b *BlockId) hash(hashstr string) uint32 {
