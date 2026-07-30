@@ -58,7 +58,7 @@ func NewFileManager(dbDirectory string, blockSize int) (*FileManager, error) {
 	}, nil
 }
 
-func (fm *FileManager) Read(blk *BlockId, p *Page) error {
+func (fm *FileManager) Read(blk *BlockId, page *Page) error {
 	fm.mu.Lock()
 	defer fm.mu.Unlock()
 
@@ -72,9 +72,8 @@ func (fm *FileManager) Read(blk *BlockId, p *Page) error {
 		return fmt.Errorf("cannot seek to offset %d: %v", offset, err)
 	}
 
-	buf := p.Contents()
+	buf := page.Contents()
 	n, err := io.ReadFull(f, buf)
-
 	if err == nil && n == len(buf) {
 		fm.blocksRead++
 		return nil
