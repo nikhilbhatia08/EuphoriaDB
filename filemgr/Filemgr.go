@@ -64,7 +64,7 @@ func (fm *FileManager) Read(blk *BlockId, page *Page) error {
 
 	f, err := fm.getFile(blk.Filename())
 	if err != nil {
-		return fmt.Errorf("cannot read block %s: %v", blk.ToString(), err)
+		return fmt.Errorf("cannot read block %s: %v", blk.String(), err)
 	}
 
 	offset := int64(blk.BlockNum()) * int64(fm.blockSize)
@@ -101,7 +101,7 @@ func (fm *FileManager) Write(blk *BlockId, p *Page) error {
 
 	f, err := fm.getFile(blk.Filename())
 	if err != nil {
-		return fmt.Errorf("cannot read block %s: %v", blk.ToString(), err)
+		return fmt.Errorf("cannot read block %s: %v", blk.String(), err)
 	}
 
 	offset := int64(blk.BlockNum()) * int64(fm.blockSize)

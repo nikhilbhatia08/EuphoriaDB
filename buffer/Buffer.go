@@ -12,9 +12,9 @@ type Buffer struct {
 	LogManager  *log.LogManager
 	Contents    *filemgr.Page
 	Block       *filemgr.BlockId
-	Pins        int32
-	TxNum       int32
-	Lsn         int32
+	Pins        int
+	TxNum       int
+	Lsn         int
 }
 
 func NewBuffer(fileManager *filemgr.FileManager, logManager *log.LogManager) *Buffer {
@@ -29,7 +29,7 @@ func NewBuffer(fileManager *filemgr.FileManager, logManager *log.LogManager) *Bu
 	}
 }
 
-func (b *Buffer) SetModified(txNum int32, lsn int32) {
+func (b *Buffer) SetModified(txNum int, lsn int) {
 	b.TxNum = txNum
 	b.Lsn = lsn
 }

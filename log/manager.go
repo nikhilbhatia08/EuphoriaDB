@@ -13,8 +13,8 @@ type LogManager struct {
 	Logfile        string
 	LogPage        *filemgr.Page
 	CurrentBlock   *filemgr.BlockId
-	latestLSN      int32
-	latestSavedLSN int32
+	latestLSN      int
+	latestSavedLSN int
 	mu             sync.Mutex
 }
 
@@ -53,7 +53,7 @@ func NewLogManager(fileManager *filemgr.FileManager, logfile string) (*LogManage
 	}, nil
 }
 
-func (lm *LogManager) Append(logRecord []byte) (int32, error) {
+func (lm *LogManager) Append(logRecord []byte) (int, error) {
 	lm.mu.Lock()
 	defer lm.mu.Unlock()
 
@@ -107,7 +107,7 @@ func (lm *LogManager) flush() error {
 	return nil
 }
 
-func (lm *LogManager) Flush(lsn int32) error {
+func (lm *LogManager) Flush(lsn int) error {
 	lm.mu.Lock()
 	defer lm.mu.Unlock()
 

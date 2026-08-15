@@ -29,7 +29,7 @@ func (b *BlockId) Equals(block *BlockId) bool {
 	return b.File == block.File && b.Blknum == block.Blknum
 }
 
-func (b *BlockId) ToString() string {
+func (b *BlockId) String() string {
 	return fmt.Sprintf("[ File : %s , block : %d]", b.File, b.Blknum)
 }
 
@@ -40,5 +40,5 @@ func (b *BlockId) hash(hashstr string) uint32 {
 }
 
 func (b *BlockId) HashCode() int {
-	return int(b.hash(b.ToString()))
+	return int(b.hash(b.String()))
 }

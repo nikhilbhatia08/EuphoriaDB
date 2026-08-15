@@ -14,28 +14,28 @@ import (
 const maxWaitTime = 10 * time.Second
 
 type BufferManager struct {
-	BufferPool []*Buffer
-	AvailableBuffers int32
+	BufferPool       []*Buffer
+	AvailableBuffers int
 
-	mu sync.Mutex
+	mu   sync.Mutex
 	cond *sync.Cond
 }
 
-func NewBufferManager(fileManager *filemgr.FileManager, logManager *log.LogManager, numberOfBuffers int32) *BufferManager {
+func NewBufferManager(fileManager *filemgr.FileManager, logManager *log.LogManager, numberOfBuffers int) *BufferManager {
 	buffers := make([]*Buffer, numberOfBuffers)
 	for i := 0; i < int(numberOfBuffers); i++ {
 		buffers[i] = NewBuffer(fileManager, logManager)
 	}
 
 	bufferManager := &BufferManager{
-		BufferPool: buffers,
+		BufferPool:       buffers,
 		AvailableBuffers: numberOfBuffers,
 	}
 	bufferManager.cond = sync.NewCond(&bufferManager.mu)
 	return bufferManager
 }
 
-func (bm *BufferManager) FlushAll(txNum int32) error {
+func (bm *BufferManager) FlushAll(txNum int) error {
 	bm.mu.Lock()
 	defer bm.mu.Unlock()
 
@@ -55,7 +55,7 @@ func (bm *BufferManager) FlushAll(txNum int32) error {
 func (bm *BufferManager) Unpin(buffer *Buffer) {
 	bm.mu.Lock()
 	defer bm.mu.Unlock()
-	
+
 	buffer.Unpin()
 	if !buffer.IsPinned() {
 		bm.AvailableBuffers++
@@ -89,7 +89,7 @@ func (bm *BufferManager) Pin(block *filemgr.BlockId) (*Buffer, error) {
 
 		if ctx.Err() != nil {
 			if errors.Is(ctx.Err(), context.DeadlineExceeded) {
-				return nil, fmt.Errorf("buffer aborted while waiting for block %s. err: %w", block.ToString(), ctx.Err())
+				return nil, fmt.Errorf("buffer aborted while waiting for block %s. err: %w", block.String(), ctx.Err())
 			}
 
 			return nil, ctx.Err()
