@@ -57,6 +57,23 @@ func (rm *RecoveryMgr) Rollback() error {
 	return rm.LogMgr.Flush(lsn)
 }
 
+func (rm *RecoveryMgr) Recover() error {
+	if err := rm.doRecover(); err != nil {
+		return err
+	}
+
+	if err := rm.BufferMgr.FlushAll(rm.TxNum); err != nil {
+		return err
+	}
+
+	lsn, err := WriteCheckpointRecordToLog(rm.LogMgr)
+	if err != nil {
+		return err
+	}
+
+	return rm.LogMgr.Flush(lsn)
+}
+
 func (rm *RecoveryMgr) doRollback() error {
 	iterator, err := rm.LogMgr.Iterator()
 	if err != nil {
@@ -121,7 +138,7 @@ func (rm *RecoveryMgr) doRecover() error {
 	return nil
 }
 
-func (rm *RecoveryMgr) SetInt(buffer * buffer.Buffer, offset int, newValue int) (int, error) {
+func (rm *RecoveryMgr) SetInt(buffer *buffer.Buffer, offset int, newValue int) (int, error) {
 	oldval := buffer.Contents.GetInt(offset)
 	block := buffer.Block
 	return WriteSetIntToLog(rm.LogMgr, rm.TxNum, block, offset, oldval)

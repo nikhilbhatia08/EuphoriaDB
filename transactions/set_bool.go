@@ -9,10 +9,10 @@ import (
 
 type SetBoolRecord struct {
 	LogRecord
-	TxNum int
+	TxNum  int
 	offset int
-	value bool
-	block *filemgr.BlockId
+	value  bool
+	block  *filemgr.BlockId
 }
 
 func NewSetBoolRecord(page *filemgr.Page) (*SetBoolRecord, error) {

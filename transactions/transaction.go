@@ -8,9 +8,11 @@ import (
 
 	"github.com/nikhilbhatia08/EuphoriaDB/buffer"
 	"github.com/nikhilbhatia08/EuphoriaDB/filemgr"
+	"github.com/nikhilbhatia08/EuphoriaDB/log"
 )
 
 type Transaction struct {
+	recoveryMgr *RecoveryMgr
 	concurrencyMgr *ConcurrencyMgr
 	bufferManager  *buffer.BufferManager
 	fileMgr        *filemgr.FileManager
@@ -32,7 +34,7 @@ func nextTxNumber() int {
 	return nextTxNum
 }
 
-func NewTransaction(bufferManager *buffer.BufferManager, filemgr *filemgr.FileManager, lockTable *LockTable) *Transaction {
+func NewTransaction(bufferManager *buffer.BufferManager, logMgr *log.LogManager, filemgr *filemgr.FileManager, lockTable *LockTable) *Transaction {
 	tx := &Transaction{
 		concurrencyMgr: NewConcurrencyMgr(lockTable),
 		bufferManager:  bufferManager,
@@ -40,12 +42,16 @@ func NewTransaction(bufferManager *buffer.BufferManager, filemgr *filemgr.FileMa
 		txNum:          nextTxNumber(),
 		buffers:        NewBufferList(bufferManager),
 	}
+	tx.recoveryMgr = NewRecoveryMgr(logMgr, bufferManager, tx, tx.txNum)
 
 	return tx
 }
 
 func (tx *Transaction) Commit() error {
-	// tx.recoveryMgr.Commit()
+	if err := tx.recoveryMgr.Commit(); err != nil {
+		return err
+	}
+
 	tx.concurrencyMgr.Release()
 	tx.buffers.UnpinAll()
 	fmt.Printf("Transaction %d committed", tx.txNum)
@@ -54,7 +60,10 @@ func (tx *Transaction) Commit() error {
 }
 
 func (tx *Transaction) Rollback() error {
-	// tx.recoverymgr.Rollback()
+	if err := tx.recoveryMgr.Rollback(); err != nil {
+		return err
+	}
+
 	tx.concurrencyMgr.Release()
 	tx.buffers.UnpinAll()
 
@@ -63,7 +72,9 @@ func (tx *Transaction) Rollback() error {
 
 func (tx *Transaction) Recover() error {
 	tx.bufferManager.FlushAll(tx.txNum)
-	// tx.recoverymgr.recover()
+	if err := tx.recoveryMgr.Recover(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -107,7 +118,36 @@ func (tx *Transaction) GetString(block *filemgr.BlockId, offset int) (string, er
 	return buffer.Contents.GetString(offset)
 }
 
+func (tx *Transaction) GetBool(block *filemgr.BlockId, offset int) (bool, error) {
+	if err := tx.concurrencyMgr.SLock(block); err != nil {
+		return false, err
+	}
+
+	buffer := tx.buffers.GetBuffer(block)
+	if buffer == nil {
+		return false, fmt.Errorf("buffer for block %s not found", block)
+	}
+
+	value := buffer.Contents.GetBool(offset)
+	return value, nil
+}
+
+func (tx *Transaction) GetDate(block *filemgr.BlockId, offset int) (time.Time, error) {
+	if err := tx.concurrencyMgr.SLock(block); err != nil {
+		return time.Time{}, err
+	}
+
+	buffer := tx.buffers.GetBuffer(block)
+	if buffer == nil {
+		return time.Time{}, fmt.Errorf("buffer for block %s not found", block)
+	}
+
+	value := buffer.Contents.GetDate(offset)
+	return value, nil
+}
+
 func (tx *Transaction) SetInt(block *filemgr.BlockId, offset int, value int, okToLog bool) error {
+	var err error
 	if err := tx.concurrencyMgr.XLock(block); err != nil {
 		return err
 	}
@@ -119,7 +159,9 @@ func (tx *Transaction) SetInt(block *filemgr.BlockId, offset int, value int, okT
 
 	lsn := -1
 	if okToLog {
-		// lsn = recovermgr.SetInt()
+		if lsn, err = tx.recoveryMgr.SetInt(buffer, offset, value); err != nil {
+			return err
+		}
 	}
 
 	page := buffer.Contents
@@ -130,6 +172,7 @@ func (tx *Transaction) SetInt(block *filemgr.BlockId, offset int, value int, okT
 }
 
 func (tx *Transaction) SetBool(block *filemgr.BlockId, offset int, value bool, okToLog bool) error {
+	var err error
 	if err := tx.concurrencyMgr.XLock(block); err != nil {
 		return err
 	}
@@ -141,7 +184,9 @@ func (tx *Transaction) SetBool(block *filemgr.BlockId, offset int, value bool, o
 
 	lsn := -1
 	if okToLog {
-		// lsn = recovermgr.SetInt()
+		if lsn, err = tx.recoveryMgr.SetBool(buffer, offset, value); err != nil {
+			return err
+		}
 	}
 
 	page := buffer.Contents
@@ -152,6 +197,7 @@ func (tx *Transaction) SetBool(block *filemgr.BlockId, offset int, value bool, o
 }
 
 func (tx *Transaction) SetDate(block *filemgr.BlockId, offset int, value time.Time, okToLog bool) error {
+	var err error
 	if err := tx.concurrencyMgr.XLock(block); err != nil {
 		return err
 	}
@@ -163,7 +209,9 @@ func (tx *Transaction) SetDate(block *filemgr.BlockId, offset int, value time.Ti
 
 	lsn := -1
 	if okToLog {
-		// lsn = recovermgr.SetInt()
+		if lsn, err = tx.recoveryMgr.SetDate(buffer, offset, value); err != nil {
+			return err
+		}
 	}
 
 	page := buffer.Contents
@@ -174,6 +222,7 @@ func (tx *Transaction) SetDate(block *filemgr.BlockId, offset int, value time.Ti
 }
 
 func (tx *Transaction) SetString(block *filemgr.BlockId, offset int, value string, okToLog bool) error {
+	var err error
 	if err := tx.concurrencyMgr.XLock(block); err != nil {
 		return err
 	}
@@ -185,7 +234,9 @@ func (tx *Transaction) SetString(block *filemgr.BlockId, offset int, value strin
 
 	lsn := -1
 	if okToLog {
-		// lsn = recovermgr.SetInt()
+		if lsn, err = tx.recoveryMgr.SetString(buffer, offset, value); err != nil {
+			return err
+		}
 	}
 
 	page := buffer.Contents

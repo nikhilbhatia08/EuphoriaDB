@@ -24,7 +24,7 @@ func (rr *RollbackRecord) String() string {
 
 func WriteRollbackRecordToLog(logmgr *log.LogManager, txNum int) (int, error) {
 	intSize := getIntSize()
-	record := make([]byte, 2 * intSize)
+	record := make([]byte, 2*intSize)
 
 	page := filemgr.NewPageFromBytes(record)
 	page.SetInt(0, int(Rollback))

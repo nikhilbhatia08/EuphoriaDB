@@ -66,7 +66,7 @@ func (str *SetStringRecord) Undo(tx *Transaction) error {
 		return err
 	}
 	defer tx.Unpin(str.Block)
-	
+
 	return tx.SetString(str.Block, str.Offset, str.Value, false)
 }
 
