@@ -4,20 +4,20 @@ import "github.com/nikhilbhatia08/EuphoriaDB/types"
 
 type Schema struct {
 	fields []string
-	info map[string]*types.FieldInfo
+	info   map[string]*types.FieldInfo
 }
 
 func NewSchema() *Schema {
 	return &Schema{
 		fields: []string{},
-		info: map[string]*types.FieldInfo{},
+		info:   map[string]*types.FieldInfo{},
 	}
 }
 
 func (sc *Schema) AddField(fieldName string, fieldType types.Type, length int) {
 	sc.fields = append(sc.fields, fieldName)
 	sc.info[fieldName] = &types.FieldInfo{
-		Type: fieldType,
+		Type:   fieldType,
 		Length: length,
 	}
 }
@@ -60,7 +60,7 @@ func (sc *Schema) HasField(fieldName string) bool {
 	}
 
 	return false
-} 
+}
 
 func (sc *Schema) FieldType(fieldName string) types.Type {
 	return sc.info[fieldName].Type

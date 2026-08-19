@@ -11,19 +11,19 @@ import (
 )
 
 type TableScan struct {
-	tx *transactions.Transaction
-	layout *record.Layout
-	recordPage *record.RecordPage
-	filename string 
+	tx          *transactions.Transaction
+	layout      *record.Layout
+	recordPage  *record.RecordPage
+	filename    string
 	currentSlot int
 }
 
 func NewTableScan(tx *transactions.Transaction, tableName string, layout *record.Layout) (*TableScan, error) {
 	fileName := fmt.Sprintf("%s.tbl", tableName)
 	tableScan := &TableScan{
-		tx: tx,
-		layout: layout,
-		filename: fileName,
+		tx:          tx,
+		layout:      layout,
+		filename:    fileName,
 		currentSlot: -1,
 	}
 
@@ -87,7 +87,7 @@ func (sc *TableScan) GetDate(fieldName string) (time.Time, error) {
 
 func (sc *TableScan) GetBool(fieldName string) (bool, error) {
 	return sc.recordPage.GetBool(sc.currentSlot, fieldName)
-} 
+}
 
 func (sc *TableScan) GetValue(fieldName string) (any, error) {
 	fieldType := sc.layout.Schema().FieldType(fieldName)
@@ -150,7 +150,7 @@ func (sc *TableScan) SetVal(fieldName string, value any) error {
 func (sc *TableScan) HasField(fieldName string) bool {
 	return sc.layout.Schema().HasField(fieldName)
 }
- 
+
 func (sc *TableScan) Insert() error {
 	if sc.layout.SlotSize() > sc.tx.BlockSize() {
 		return fmt.Errorf("record slot size %d is greater than block size %d", sc.layout.SlotSize(), sc.tx.BlockSize())
@@ -192,7 +192,7 @@ func (sc *TableScan) MoveToRecordID(rid *record.Id) error {
 	sc.Close()
 
 	blk := &filemgr.BlockId{
-		File:        sc.filename,
+		File:   sc.filename,
 		Blknum: rid.BlockNumber(),
 	}
 
@@ -255,5 +255,5 @@ func (sc *TableScan) atLastBlock() (bool, error) {
 		return false, fmt.Errorf("error getting file size: %w", err)
 	}
 
-	return sc.recordPage.Block().BlockNum() == fileSize - 1, nil
+	return sc.recordPage.Block().BlockNum() == fileSize-1, nil
 }

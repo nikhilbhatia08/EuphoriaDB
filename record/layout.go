@@ -8,14 +8,14 @@ import (
 )
 
 type Layout struct {
-	schema *Schema
-	offsets map[string]int
+	schema   *Schema
+	offsets  map[string]int
 	slotSize int
 }
 
 func NewLayout(schema *Schema) *Layout {
 	layout := &Layout{
-		schema: schema,
+		schema:  schema,
 		offsets: map[string]int{},
 	}
 
@@ -30,9 +30,9 @@ func NewLayout(schema *Schema) *Layout {
 }
 
 func NewLayoutWithInfo(schema *Schema, offsets map[string]int, slotSize int) *Layout {
-	return  &Layout{
-		schema: schema,
-		offsets: offsets,
+	return &Layout{
+		schema:   schema,
+		offsets:  offsets,
 		slotSize: slotSize,
 	}
 }

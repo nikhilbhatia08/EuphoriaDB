@@ -12,7 +12,7 @@ import (
 )
 
 type Transaction struct {
-	recoveryMgr *RecoveryMgr
+	recoveryMgr    *RecoveryMgr
 	concurrencyMgr *ConcurrencyMgr
 	bufferManager  *buffer.BufferManager
 	fileMgr        *filemgr.FileManager

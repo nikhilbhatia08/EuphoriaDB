@@ -11,12 +11,12 @@ import (
 
 const (
 	EMPTY int = 0
-	USED int = 1
+	USED  int = 1
 )
 
 type RecordPage struct {
-	tx *transactions.Transaction
-	block *filemgr.BlockId
+	tx     *transactions.Transaction
+	block  *filemgr.BlockId
 	layout *Layout
 }
 
@@ -26,8 +26,8 @@ func NewRecordPage(tx *transactions.Transaction, block *filemgr.BlockId, layout 
 	}
 
 	return &RecordPage{
-		tx: tx,
-		block: block,
+		tx:     tx,
+		block:  block,
 		layout: layout,
 	}, nil
 }
@@ -82,7 +82,7 @@ func (rp *RecordPage) Block() *filemgr.BlockId {
 
 func (rp *RecordPage) NextAfter(slot int) (int, error) {
 	return rp.searchAfter(slot, USED)
-} 
+}
 
 func (rp *RecordPage) InsertAfter(slot int) (int, error) {
 	newSlot, err := rp.searchAfter(slot, EMPTY)

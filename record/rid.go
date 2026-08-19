@@ -4,7 +4,7 @@ import "fmt"
 
 type Id struct {
 	blockNumber int
-	slot int
+	slot        int
 }
 
 func NewID(blockNumber, slot int) *Id {
