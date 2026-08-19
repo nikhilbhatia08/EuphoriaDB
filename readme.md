@@ -31,3 +31,5 @@ enable more efficient query processing:
                 operators, in order to make optimum use of available
                 buffers.)
 * opt (Implements a heuristic query optimizer)
+
+The goal is to implement all of the above items, the database creation is still in progress.
