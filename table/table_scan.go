@@ -6,9 +6,12 @@ import (
 
 	"github.com/nikhilbhatia08/EuphoriaDB/filemgr"
 	"github.com/nikhilbhatia08/EuphoriaDB/record"
+	"github.com/nikhilbhatia08/EuphoriaDB/scan"
 	"github.com/nikhilbhatia08/EuphoriaDB/transactions"
 	"github.com/nikhilbhatia08/EuphoriaDB/types"
 )
+
+var _ scan.UpdateScan = (*TableScan)(nil)
 
 type TableScan struct {
 	tx          *transactions.Transaction
@@ -89,7 +92,7 @@ func (sc *TableScan) GetBool(fieldName string) (bool, error) {
 	return sc.recordPage.GetBool(sc.currentSlot, fieldName)
 }
 
-func (sc *TableScan) GetValue(fieldName string) (any, error) {
+func (sc *TableScan) GetVal(fieldName string) (any, error) {
 	fieldType := sc.layout.Schema().FieldType(fieldName)
 
 	switch fieldType {
