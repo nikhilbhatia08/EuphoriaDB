@@ -1,14 +1,17 @@
-package plan
+package plan_impl
 
 import (
 	"fmt"
 
 	"github.com/nikhilbhatia08/EuphoriaDB/metadata"
+	"github.com/nikhilbhatia08/EuphoriaDB/plan"
 	"github.com/nikhilbhatia08/EuphoriaDB/record"
 	"github.com/nikhilbhatia08/EuphoriaDB/scan"
 	"github.com/nikhilbhatia08/EuphoriaDB/table"
 	"github.com/nikhilbhatia08/EuphoriaDB/transactions"
 )
+
+var _ plan.Plan = (*TablePlan)(nil)
 
 type TablePlan struct {
 	tx        *transactions.Transaction
@@ -44,4 +47,16 @@ func (tp *TablePlan) Open() (scan.TableScan, error) {
 
 func (tp *TablePlan) BlocksAccessed() int {
 	return tp.statInfo.NumBlocks()
+}
+
+func (tp *TablePlan) RecordsOutput() int {
+	return tp.statInfo.NumRecords()
+}
+
+func (tp *TablePlan) DistinctValues(fieldName string) int {
+	return tp.statInfo.DistinctValues(fieldName)
+}
+
+func (tp *TablePlan) Schema() *record.Schema {
+	return tp.layout.Schema()
 }

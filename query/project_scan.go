@@ -11,13 +11,13 @@ import (
 var _ scan.UpdateScan = (*ProjectScan)(nil)
 
 type ProjectScan struct {
-	s scan.TableScan
+	s         scan.TableScan
 	fieldList []string
 }
 
 func NewProjectScan(scan scan.TableScan, fieldList []string) *ProjectScan {
 	return &ProjectScan{
-		s: scan,
+		s:         scan,
 		fieldList: fieldList,
 	}
 }
@@ -183,5 +183,3 @@ func (ps *ProjectScan) MoveToRecordID(rid *record.Id) error {
 func (ps *ProjectScan) Close() {
 	ps.s.Close()
 }
-
-

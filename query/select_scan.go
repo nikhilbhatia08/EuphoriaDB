@@ -15,6 +15,13 @@ type SelectScan struct {
 	predicate *Predicate
 }
 
+func NewSelectScan(s scan.TableScan, predicate *Predicate) *SelectScan {
+	return &SelectScan{
+		s:         s,
+		predicate: predicate,
+	}
+}
+
 func (ss *SelectScan) BeforeFirst() error {
 	return ss.s.BeforeFirst()
 }

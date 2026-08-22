@@ -1,10 +1,10 @@
 package query
 
 import (
-	"fmt"
-
+	"github.com/nikhilbhatia08/EuphoriaDB/plan"
 	"github.com/nikhilbhatia08/EuphoriaDB/record"
 	"github.com/nikhilbhatia08/EuphoriaDB/scan"
+	"github.com/nikhilbhatia08/EuphoriaDB/types"
 )
 
 type Predicate struct {
@@ -27,17 +27,21 @@ func (p *Predicate) ConjoinWith(other *Predicate) {
 
 func (p *Predicate) IsStatisfied(tableScan scan.TableScan) (bool, error) {
 	for _, term := range p.terms {
-		condition, err := term.IsStatisfied(tableScan)
-		if err != nil {
-			return false, fmt.Errorf("error checking condition: %w", err)
-		}
-
+		condition := term.IsStatisfied(tableScan)
 		if !condition {
 			return false, nil
 		}
 	}
 
 	return true, nil
+}
+
+func (p *Predicate) ReductionFactor(queryPlan plan.Plan) int {
+	factor := 1
+	for _, term := range p.terms {
+		factor *= term.ReductionFactor(queryPlan)
+	}
+	return factor
 }
 
 func (p *Predicate) SelectSubPredicate(schema *record.Schema) *Predicate {
@@ -94,6 +98,15 @@ func (p *Predicate) EquatesWithField(fieldName string) string {
 	}
 
 	return ""
+}
+
+func (p *Predicate) ComparesWithConstant(fieldName string) (types.Operator, any) {
+	for _, term := range p.terms {
+		if op, c := term.ComparesWithConstant(fieldName); op != types.NONE {
+			return op, c
+		}
+	}
+	return types.NONE, nil
 }
 
 func (p *Predicate) String() string {

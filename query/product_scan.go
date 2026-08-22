@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/nikhilbhatia08/EuphoriaDB/scan"
 	"github.com/nikhilbhatia08/EuphoriaDB/record"
+	"github.com/nikhilbhatia08/EuphoriaDB/scan"
 )
 
 var _ scan.UpdateScan = (*ProductScan)(nil)
