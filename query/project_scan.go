@@ -166,7 +166,7 @@ func (ps *ProjectScan) Insert() error {
 func (ps *ProjectScan) GetRecordID() *record.Id {
 	updateScan, ok := ps.s.(scan.UpdateScan)
 	if !ok {
-		panic(fmt.Sprintf("error update not supported: %v", ps.s))
+		panic(fmt.Sprintf("error update not supported: %T", ps.s))
 	}
 
 	return updateScan.GetRecordID()

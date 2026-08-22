@@ -137,7 +137,7 @@ func (ss *SelectScan) Insert() error {
 func (ss *SelectScan) GetRecordID() *record.Id {
 	updateScan, ok := ss.s.(scan.UpdateScan)
 	if !ok {
-		panic(fmt.Sprintf("error update not supported", ss.s))
+		panic(fmt.Sprintf("error update not supported: %T", ss.s))
 	}
 
 	return updateScan.GetRecordID()
