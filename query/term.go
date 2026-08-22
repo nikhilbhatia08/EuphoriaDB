@@ -13,7 +13,7 @@ import (
 type Term struct {
 	lhs *Expression
 	rhs *Expression
-	op types.Operator
+	op  types.Operator
 }
 
 func NewTerm(lhs *Expression, rhs *Expression, op types.Operator) *Term {

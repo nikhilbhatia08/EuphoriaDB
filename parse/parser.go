@@ -179,10 +179,10 @@ func (p *Parser) Query() (*QueryData, error) {
 	}
 
 	return &QueryData{
-		fields:     fields,
-		tables:     tables,
-		predicate:  pred,
-		groupBy:    groupBy,
+		fields:    fields,
+		tables:    tables,
+		predicate: pred,
+		groupBy:   groupBy,
 	}, nil
 }
 
@@ -260,7 +260,7 @@ func (p *Parser) create() (interface{}, error) {
 	if err := p.lex.EatKeyword("create"); err != nil {
 		return nil, err
 	}
-	
+
 	return p.createTable()
 }
 
