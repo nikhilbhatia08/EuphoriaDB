@@ -10,6 +10,7 @@ import (
 type MetadataManager struct {
 	tableMetadata *TableMetadata
 	statManager   *StatManager
+	viewManager *ViewManager
 }
 
 func NewMetadataManager(isNew bool, tx *transactions.Transaction) (*MetadataManager, error) {
@@ -21,10 +22,15 @@ func NewMetadataManager(isNew bool, tx *transactions.Transaction) (*MetadataMana
 	if err != nil {
 		return nil, fmt.Errorf("error initializing stat manager: %w", err)
 	}
+	viewManager, err := NewViewManager(isNew, tableMetadata, tx)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing view manager: %w", err)
+	}
 
 	return &MetadataManager{
 		tableMetadata: tableMetadata,
 		statManager:   StatManager,
+		viewManager: viewManager,
 	}, nil
 }
 
@@ -34,6 +40,14 @@ func (mm *MetadataManager) CreateTable(tableName string, schema *record.Schema, 
 	}
 
 	return nil
+}
+
+func (mm *MetadataManager) CreateView(viewName string, viewDef string, tx *transactions.Transaction) error {
+	return mm.CreateView(viewName, viewDef, tx)
+}
+
+func (mm *MetadataManager) GetViewDefinition(viewName string, tx *transactions.Transaction) (string, error) {
+	return mm.viewManager.GetViewDefinition(viewName, tx)
 }
 
 func (mm *MetadataManager) GetLayout(tableName string, tx *transactions.Transaction) (*record.Layout, error) {

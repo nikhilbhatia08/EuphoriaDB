@@ -14,7 +14,7 @@ type ProjectScan struct {
 	schema *record.Schema
 }
 
-func NewProjectScan(plan plan.Plan, fieldList []string) *ProjectScan {
+func NewProjectPlan(plan plan.Plan, fieldList []string) *ProjectScan {
 	projectScan := &ProjectScan{
 		plan:   plan,
 		schema: record.NewSchema(),
