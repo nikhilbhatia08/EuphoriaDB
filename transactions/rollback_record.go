@@ -8,11 +8,13 @@ import (
 )
 
 type RollbackRecord struct {
-	LogRecord
 	TxNum int
 }
 
-func NewRollbackRecord(txNum int) (*RollbackRecord, error) {
+func NewRollbackRecord(page *filemgr.Page) (*RollbackRecord, error) {
+	txNumPos := getIntSize()
+	txNum := page.GetInt(txNumPos)
+
 	return &RollbackRecord{
 		TxNum: txNum,
 	}, nil
@@ -20,6 +22,19 @@ func NewRollbackRecord(txNum int) (*RollbackRecord, error) {
 
 func (rr *RollbackRecord) String() string {
 	return fmt.Sprintf("<ROLLBACK %d>", rr.TxNum)
+}
+
+func (rr *RollbackRecord) Op() LogRecordType {
+	return Rollback
+}
+
+func (rr *RollbackRecord) TxNumber() int {
+	return rr.TxNum
+}
+
+func (rr *RollbackRecord) Undo(tx *Transaction) error {
+	// Rollback record has no undo action
+	return nil
 }
 
 func WriteRollbackRecordToLog(logmgr *log.LogManager, txNum int) (int, error) {

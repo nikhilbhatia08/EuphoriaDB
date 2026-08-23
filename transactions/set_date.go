@@ -9,7 +9,6 @@ import (
 )
 
 type SetDateRecord struct {
-	LogRecord
 	TxNum  int
 	offset int
 	value  time.Time

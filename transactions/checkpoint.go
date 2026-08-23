@@ -6,7 +6,6 @@ import (
 )
 
 type CheckpointRecord struct {
-	LogRecord
 }
 
 func NewCheckpointRecord() (*CheckpointRecord, error) {
@@ -22,10 +21,20 @@ func (ck *CheckpointRecord) String() string {
 }
 
 func WriteCheckpointRecordToLog(logManager *log.LogManager) (int, error) {
-	record := make([]byte, 4)
+	intSize := getIntSize()
+	record := make([]byte, intSize)
 
 	page := filemgr.NewPageFromBytes(record)
 	page.SetInt(0, int(Checkpoint))
 
 	return logManager.Append(record)
+}
+
+func (ck *CheckpointRecord) TxNumber() int {
+	return -1
+}
+
+func (ck *CheckpointRecord) Undo(tx *Transaction) error {
+	// Checkpoint has no undo
+	return nil
 }

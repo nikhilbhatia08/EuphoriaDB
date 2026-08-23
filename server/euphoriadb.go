@@ -62,6 +62,10 @@ func NewEuphoriaDB(directoryName string) (*EuphoriaDB, error) {
 		return nil, err
 	}
 
+	db.queryPlanner = plan_impl.NewBasicQueryPlanner(db.metadataManager)
+	db.updatePlanner = plan_impl.NewBasicUpdatePlanner(db.metadataManager)
+	db.planner = plan_impl.NewPlanner(db.queryPlanner, db.updatePlanner)
+
 	return db, nil
 }
 

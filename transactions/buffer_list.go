@@ -29,6 +29,7 @@ func (bl *BufferList) Pin(block *filemgr.BlockId) error {
 	if err != nil {
 		return err
 	}
+	bl.Buffers[*block] = buffer
 	bl.Pins[*buffer]++
 
 	return nil

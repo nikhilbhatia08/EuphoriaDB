@@ -8,7 +8,6 @@ import (
 )
 
 type SetIntRecord struct {
-	LogRecord
 	TxNum  int
 	offset int
 	value  int

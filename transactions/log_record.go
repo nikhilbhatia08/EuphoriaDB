@@ -32,6 +32,10 @@ func CreateLogRecord(bytes []byte) (LogRecord, error) {
 		return NewCheckpointRecord()
 	case int(Start):
 		return NewStartRecord(page)
+	case int(Commit):
+		return NewCommitRecord(page)
+	case int(Rollback):
+		return NewRollbackRecord(page)
 	case int(SetString):
 		return NewSetStringRecord(page)
 	case int(SetInt):

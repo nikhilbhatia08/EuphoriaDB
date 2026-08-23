@@ -38,7 +38,7 @@ func NewTableMetadata(isNew bool, tx *transactions.Transaction) (*TableMetadata,
 		if err := tableMetadata.CreateTable("table_catalog", tableCatalogSchema, tx); err != nil {
 			return nil, fmt.Errorf("error creating table_catalog table: %w", err)
 		}
-		if err := tableMetadata.CreateTable("field_catalog", tableCatalogSchema, tx); err != nil {
+		if err := tableMetadata.CreateTable("field_catalog", fieldCatalogSchema, tx); err != nil {
 			return nil, fmt.Errorf("error creationg field_catalog table: %w", err)
 		}
 	}
@@ -49,7 +49,7 @@ func NewTableMetadata(isNew bool, tx *transactions.Transaction) (*TableMetadata,
 func (tbm *TableMetadata) CreateTable(tableName string, schema *record.Schema, tx *transactions.Transaction) error {
 	layout := record.NewLayout(schema)
 
-	tableScanCatalog, err := table.NewTableScan(tx, "table_catalog", layout)
+	tableScanCatalog, err := table.NewTableScan(tx, "table_catalog", tbm.tableCatalogLayout)
 	if err != nil {
 		return fmt.Errorf("error scanning table catalog: %w", err)
 	}
@@ -62,7 +62,7 @@ func (tbm *TableMetadata) CreateTable(tableName string, schema *record.Schema, t
 	tableScanCatalog.SetString("tablename", tableName)
 	tableScanCatalog.SetInt("slotsize", layout.SlotSize())
 
-	fieldCatalogTableScan, err := table.NewTableScan(tx, "field_catalog", layout)
+	fieldCatalogTableScan, err := table.NewTableScan(tx, "field_catalog", tbm.fieldCatalogLayout)
 	if err != nil {
 		return fmt.Errorf("error scanning field catalog: %w", err)
 	}
@@ -82,7 +82,7 @@ func (tbm *TableMetadata) CreateTable(tableName string, schema *record.Schema, t
 
 func (tbm *TableMetadata) GetLayout(tableName string, tx *transactions.Transaction) (*record.Layout, error) {
 	size := -1
-	tableCatalogScan, err := table.NewTableScan(tx, tableName, tbm.tableCatalogLayout)
+	tableCatalogScan, err := table.NewTableScan(tx, "table_catalog", tbm.tableCatalogLayout)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching table catalog: %w", err)
 	}

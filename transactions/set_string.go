@@ -9,7 +9,6 @@ import (
 )
 
 type SetStringRecord struct {
-	LogRecord
 	TxNum  int
 	Offset int
 	Value  string
@@ -28,7 +27,7 @@ func NewSetStringRecord(page *filemgr.Page) (*SetStringRecord, error) {
 		return nil, fmt.Errorf("error fetching file name. err: %w", err)
 	}
 
-	blockNumPos := fileNamePos + intSize
+	blockNumPos := fileNamePos + filemgr.MaxLength(len(fileName))
 	blockNum := page.GetInt(blockNumPos)
 	block := filemgr.NewBlockId(fileName, blockNum)
 

@@ -8,17 +8,16 @@ import (
 )
 
 type CommitRecord struct {
-	LogRecord
 	TxNum int
 }
 
-func NewCommitRecord(page *filemgr.Page) *CommitRecord {
+func NewCommitRecord(page *filemgr.Page) (*CommitRecord, error) {
 	txNumPos := getIntSize()
 	txNum := page.GetInt(txNumPos)
 
 	return &CommitRecord{
 		TxNum: txNum,
-	}
+	}, nil
 }
 
 func (cr *CommitRecord) Op() LogRecordType {
@@ -29,8 +28,13 @@ func (cr *CommitRecord) String() string {
 	return fmt.Sprintf("<COMMIT %d>", cr.TxNum)
 }
 
-func (cr *CommitRecord) Txnumber() int {
+func (cr *CommitRecord) TxNumber() int {
 	return cr.TxNum
+}
+
+func (cr *CommitRecord) Undo(tx *Transaction) error {
+	// Commit records have no undo action
+	return nil
 }
 
 func WriteCommitRecordToLog(logMgr *log.LogManager, txNum int) (int, error) {

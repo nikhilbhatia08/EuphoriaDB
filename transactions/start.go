@@ -8,7 +8,6 @@ import (
 )
 
 type StartRecord struct {
-	LogRecord
 	TxNum int
 }
 
@@ -31,6 +30,11 @@ func (sr *StartRecord) String() string {
 
 func (sr *StartRecord) TxNumber() int {
 	return sr.TxNum
+}
+
+func (sr *StartRecord) Undo(tx *Transaction) error {
+	// Start record has no undo
+	return nil
 }
 
 func WriteStartToLog(logmgr *log.LogManager, txNum int) (int, error) {

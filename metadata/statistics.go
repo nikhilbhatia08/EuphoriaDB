@@ -20,6 +20,8 @@ type StatManager struct {
 func NewStatManager(tableMetadata *TableMetadata, tx *transactions.Transaction) (*StatManager, error) {
 	sm := &StatManager{
 		tableMetadata: tableMetadata,
+		tableStats:    make(map[string]*StatInfo),
+		numCalls:      0,
 	}
 	if err := sm.refereshStatistics(tx); err != nil {
 		return nil, fmt.Errorf("error to referesh statistics: %w", err)
@@ -99,9 +101,6 @@ func (sm *StatManager) refereshStatistics(tx *transactions.Transaction) error {
 }
 
 func (sm *StatManager) calcTableStats(tableName string, layout *record.Layout, tx *transactions.Transaction) (*StatInfo, error) {
-	sm.mu.Lock()
-	defer sm.mu.Unlock()
-
 	numRecords := 0
 	numBlocks := 0
 

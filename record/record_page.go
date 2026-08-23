@@ -91,7 +91,7 @@ func (rp *RecordPage) InsertAfter(slot int) (int, error) {
 	}
 
 	if newSlot >= 0 {
-		if err := rp.setFlag(slot, USED); err != nil {
+		if err := rp.setFlag(newSlot, USED); err != nil {
 			return -1, err
 		}
 	}
@@ -113,7 +113,7 @@ func (rp *RecordPage) searchAfter(slot int, flag int) (int, error) {
 		slot++
 	}
 
-	return -1, nil
+	return -1, fmt.Errorf("no slot found with flag %d after slot %d", flag, slot)
 }
 
 func (rp *RecordPage) Format() error {
@@ -147,9 +147,8 @@ func (rp *RecordPage) Format() error {
 			if err != nil {
 				return err
 			}
-
-			slot++
 		}
+		slot++
 	}
 
 	return nil

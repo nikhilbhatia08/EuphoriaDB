@@ -8,7 +8,6 @@ import (
 )
 
 type SetBoolRecord struct {
-	LogRecord
 	TxNum  int
 	offset int
 	value  bool
