@@ -24,7 +24,7 @@ func (bup *BasicUpdatePlanner) ExecuteDelete(data *parse.DeleteData, tx *transac
 	}
 
 	selectPlan := NewSelectPlan(tablePlan, data.Predicate())
-	
+
 	s, err := selectPlan.Open()
 	if err != nil {
 		return 0, err

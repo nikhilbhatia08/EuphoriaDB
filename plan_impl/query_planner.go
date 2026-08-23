@@ -6,6 +6,6 @@ import (
 	"github.com/nikhilbhatia08/EuphoriaDB/transactions"
 )
 
-type QueryPlanner interface{
+type QueryPlanner interface {
 	CreatePlan(queryData *parse.QueryData, transaction *transactions.Transaction) (plan.Plan, error)
 }

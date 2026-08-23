@@ -9,13 +9,13 @@ import (
 )
 
 type Planner struct {
-	queryPlanner QueryPlanner
+	queryPlanner  QueryPlanner
 	updatePlanner UpdatePlanner
 }
 
 func NewPlanner(queryPlanner QueryPlanner, updatePlanner UpdatePlanner) *Planner {
 	return &Planner{
-		queryPlanner: queryPlanner,
+		queryPlanner:  queryPlanner,
 		updatePlanner: updatePlanner,
 	}
 }

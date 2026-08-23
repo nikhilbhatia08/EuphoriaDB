@@ -26,7 +26,7 @@ func (bq *BasicQueryPlanner) CreatePlan(data *parse.QueryData, tx *transactions.
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if viewDef != "" {
 			parser := parse.NewParser(viewDef)
 			viewData, err := parser.Query()

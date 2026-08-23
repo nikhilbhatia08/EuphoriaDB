@@ -10,7 +10,7 @@ import (
 type MetadataManager struct {
 	tableMetadata *TableMetadata
 	statManager   *StatManager
-	viewManager *ViewManager
+	viewManager   *ViewManager
 }
 
 func NewMetadataManager(isNew bool, tx *transactions.Transaction) (*MetadataManager, error) {
@@ -30,7 +30,7 @@ func NewMetadataManager(isNew bool, tx *transactions.Transaction) (*MetadataMana
 	return &MetadataManager{
 		tableMetadata: tableMetadata,
 		statManager:   StatManager,
-		viewManager: viewManager,
+		viewManager:   viewManager,
 	}, nil
 }
 
