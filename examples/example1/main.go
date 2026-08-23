@@ -4,19 +4,19 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	// "os"
+	"os"
 
 	_ "github.com/nikhilbhatia08/EuphoriaDB/driver"
 )
 
 func main() {
 	dbDirectory := "./testdb1"
-	// defer func() {
-	// 	if err := os.RemoveAll(dbDirectory); err != nil {
-	// 		log.Fatalf("Failed to clean up database directory: %v\n", err)
-	// 	}
-	// }()
-	
+	defer func() {
+		if err := os.RemoveAll(dbDirectory); err != nil {
+			log.Fatalf("Failed to clean up database directory: %v\n", err)
+		}
+	}()
+
 	db, err := sql.Open("euphoriadb", dbDirectory)
 	if err != nil {
 		log.Fatalf("Failed to open euphoriaDB: %v\n", err)
@@ -33,9 +33,18 @@ func main() {
 		log.Fatalf("error beginning transaction: %v", err)
 	}
 
-	if _, err := tx.Exec("INSERT INTO employees(id, name, age) VALUES (1, 'new name', 22)"); err != nil {
+	if _, err := tx.Exec("INSERT INTO employees(id, name, age) VALUES (1, 'new name 1', 22)"); err != nil {
 		_ = tx.Rollback()
 		log.Fatalf("error inserting to table: %v", err)
+	}
+
+	if _, err := tx.Exec("INSERT INTO employees(id, name, age) VALUES (2, 'new name 2', 25)"); err != nil {
+		_ = tx.Rollback()
+		log.Fatalf("error inserting to table: %v", err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		log.Fatalf("error committing transaction: %v", err)
 	}
 
 	fmt.Println("querying rows: ")

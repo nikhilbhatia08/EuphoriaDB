@@ -1,0 +1,41 @@
+<svg width="640" height="220" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>EuphoriaDB logo</title>
+  <desc>A stylized database cylinder in purple, pink, and teal gradients next to the wordmark "EuphoriaDB"</desc>
+  <defs>
+    <linearGradient id="ringTop" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="50%" stop-color="#EC4899"/>
+      <stop offset="100%" stop-color="#14B8A6"/>
+    </linearGradient>
+    <linearGradient id="ringMid" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6D28D9"/>
+      <stop offset="50%" stop-color="#DB2777"/>
+      <stop offset="100%" stop-color="#0D9488"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Database cylinder mark -->
+  <g transform="translate(30,30)">
+    <path d="M0 30 C0 13.4 22.4 0 50 0 C77.6 0 100 13.4 100 30 L100 130 C100 146.6 77.6 160 50 160 C22.4 160 0 146.6 0 130 Z" fill="url(#body)"/>
+    <ellipse cx="50" cy="130" rx="50" ry="30" fill="#5B21B6"/>
+    <path d="M0 90 C0 106.6 22.4 120 50 120 C77.6 120 100 106.6 100 90 L100 60 C100 76.6 77.6 90 50 90 C22.4 90 0 76.6 0 60 Z" fill="#7C3AED" opacity="0.55"/>
+    <ellipse cx="50" cy="30" rx="50" ry="30" fill="url(#ringTop)"/>
+    <ellipse cx="50" cy="60" rx="50" ry="30" fill="none" stroke="url(#ringMid)" stroke-width="2.5" opacity="0.9"/>
+    <ellipse cx="50" cy="90" rx="50" ry="30" fill="none" stroke="#F472B6" stroke-width="2" opacity="0.6"/>
+    <circle cx="50" cy="30" r="6" fill="#FDE68A"/>
+    <circle cx="30" cy="24" r="3" fill="#FFFFFF" opacity="0.8"/>
+    <circle cx="70" cy="26" r="2.5" fill="#FFFFFF" opacity="0.6"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="165" y="115" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#4C1D95">Euphoria</text>
+  <text x="165" y="115" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#0D9488">
+    <tspan dx="0" dy="0"></tspan>
+  </text>
+  <text x="437" y="115" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#DB2777">DB</text>
+  <text x="167" y="145" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#6B7280" letter-spacing="2">A RELATIONAL DATABASE, BUILT FROM SCRATCH IN GO</text>
+</svg>

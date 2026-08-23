@@ -54,7 +54,7 @@ func (tx *Transaction) Commit() error {
 
 	tx.concurrencyMgr.Release()
 	tx.buffers.UnpinAll()
-	fmt.Printf("Transaction %d committed", tx.txNum)
+	fmt.Printf("Transaction %d committed\n", tx.txNum)
 
 	return nil
 }

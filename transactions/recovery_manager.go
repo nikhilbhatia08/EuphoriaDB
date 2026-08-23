@@ -24,16 +24,16 @@ func NewRecoveryMgr(logMgr *log.LogManager, bufferMgr *buffer.BufferManager, tra
 }
 
 func (rm *RecoveryMgr) Commit() error {
-	if err := rm.BufferMgr.FlushAll(rm.TxNum); err != nil {
-		return err
-	}
-
 	lsn, err := WriteCommitRecordToLog(rm.LogMgr, rm.TxNum)
 	if err != nil {
 		return err
 	}
 
 	if err := rm.LogMgr.Flush(lsn); err != nil {
+		return err
+	}
+
+	if err := rm.BufferMgr.FlushAll(rm.TxNum); err != nil {
 		return err
 	}
 
@@ -45,16 +45,20 @@ func (rm *RecoveryMgr) Rollback() error {
 		return err
 	}
 
-	if err := rm.BufferMgr.FlushAll(rm.TxNum); err != nil {
-		return err
-	}
-
 	lsn, err := WriteRollbackRecordToLog(rm.LogMgr, rm.TxNum)
 	if err != nil {
 		return err
 	}
 
-	return rm.LogMgr.Flush(lsn)
+	if err := rm.LogMgr.Flush(lsn); err != nil {
+		return err
+	}
+
+	if err := rm.BufferMgr.FlushAll(rm.TxNum); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (rm *RecoveryMgr) Recover() error {

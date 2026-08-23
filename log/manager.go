@@ -111,7 +111,9 @@ func (lm *LogManager) Flush(lsn int) error {
 	lm.mu.Lock()
 	defer lm.mu.Unlock()
 
-	if lsn >= lm.latestLSN {
+	// Flush the log to disk if the requested LSN has not yet been saved.
+	// `latestSavedLSN` tracks the highest LSN that has been written to disk.
+	if lsn > lm.latestSavedLSN {
 		return lm.flush()
 	}
 	return nil
