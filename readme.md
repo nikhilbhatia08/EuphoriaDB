@@ -73,12 +73,6 @@ cd EuphoriaDB
 go build ./...
 ```
 
-### Run tests
-
-```bash
-go test ./...
-```
-
 ### Try an example
 
 ```bash
