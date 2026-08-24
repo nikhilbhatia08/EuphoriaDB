@@ -43,12 +43,17 @@ func main() {
 		log.Fatalf("error inserting to table: %v", err)
 	}
 
+	if _, err := tx.Exec("INSERT INTO employees(id, name, age) VALUES (3, 'new name 3', 20)"); err != nil {
+		_ = tx.Rollback()
+		log.Fatalf("error inserting to table: %v", err)
+	}
+
 	if err := tx.Commit(); err != nil {
 		log.Fatalf("error committing transaction: %v", err)
 	}
 
 	fmt.Println("querying rows: ")
-	selectQuery := "SELECT id, name, age FROM employees"
+	selectQuery := "SELECT id, name, age FROM employees WHERE age > 20"
 	rows, err := db.Query(selectQuery)
 	if err != nil {
 		log.Fatalf("error querying rows: %v", err)

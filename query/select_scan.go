@@ -41,7 +41,11 @@ func (ss *SelectScan) Next() (bool, error) {
 		}
 
 		if satisfied, err := ss.predicate.IsStatisfied(ss.s); err == nil {
-			return satisfied, nil
+			if satisfied {
+				return true, nil
+			} else {
+				continue
+			}
 		} else {
 			return false, fmt.Errorf("error checking predicate: %w", err)
 		}
