@@ -5,6 +5,7 @@ import (
 	"github.com/nikhilbhatia08/EuphoriaDB/parse"
 	"github.com/nikhilbhatia08/EuphoriaDB/scan"
 	"github.com/nikhilbhatia08/EuphoriaDB/transactions"
+	"github.com/nikhilbhatia08/EuphoriaDB/utils"
 )
 
 var _ UpdatePlanner = (*BasicUpdatePlanner)(nil)
@@ -107,6 +108,10 @@ func (bup *BasicUpdatePlanner) ExecuteInsert(data *parse.InsertData, tx *transac
 	values := data.Values()
 	for i, fieldName := range data.Fields() {
 		value := values[i]
+		if err := utils.ValidateStringLength(tablePlan.Schema(), fieldName, value); err != nil {
+			return 0, err
+		}
+
 		if err := updateScan.SetVal(fieldName, value); err != nil {
 			return 0, err
 		}
