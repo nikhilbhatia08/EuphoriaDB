@@ -3,26 +3,41 @@ package driver
 import (
 	"database/sql"
 	"database/sql/driver"
-
-	"github.com/nikhilbhatia08/EuphoriaDB/server"
+	"sync"
 )
-
-const databaseName = "euphoriadb"
-
-func init() {
-	sql.Register(databaseName, &EuphoriaDBDriver{})
-}
 
 var _ driver.Driver = (*EuphoriaDBDriver)(nil)
 
 type EuphoriaDBDriver struct{}
 
-func (d *EuphoriaDBDriver) Open(directory string) (driver.Conn, error) {
-	db, err := server.NewEuphoriaDB(directory)
+var (
+	instancesMu sync.Mutex
+	instances   = map[string]*EuphoriaDB{}
+)
+
+func init() {
+	sql.Register("euphoriadb", &EuphoriaDBDriver{})
+}
+
+func getOrCreateDB(directory string) (*EuphoriaDB, error) {
+	instancesMu.Lock()
+	defer instancesMu.Unlock()
+
+	if db, ok := instances[directory]; ok {
+		return db, nil
+	}
+	db, err := NewEuphoriaDB(directory)
 	if err != nil {
 		return nil, err
 	}
-	return &EuphoriaDBConnection{
-		db: db,
-	}, nil
+	instances[directory] = db
+	return db, nil
+}
+
+func (d *EuphoriaDBDriver) Open(directory string) (driver.Conn, error) {
+	db, err := getOrCreateDB(directory)
+	if err != nil {
+		return nil, err
+	}
+	return &EuphoriaDBConnection{db: db}, nil
 }

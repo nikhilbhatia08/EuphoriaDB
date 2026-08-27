@@ -4,12 +4,12 @@ import (
 	"database/sql/driver"
 	"errors"
 
-	"github.com/nikhilbhatia08/EuphoriaDB/server"
+	// "github.com/nikhilbhatia08/EuphoriaDB/server"
 	"github.com/nikhilbhatia08/EuphoriaDB/transactions"
 )
 
 type EuphoriaDBConnection struct {
-	db          *server.EuphoriaDB
+	db          *EuphoriaDB
 	transaction *transactions.Transaction
 }
 
